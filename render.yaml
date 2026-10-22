@@ -1,0 +1,7 @@
+services:
+  - type: web
+    runtime: static
+    name: form-studio
+    branch: main
+    buildCommand: echo "Static site: no build step required"
+    staticPublishPath: .
