@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f5f3" />
+    <meta name="description" content="Build a form and see the student view update as you edit." />
+    <title>Form Studio — builder</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#builder">Skip to the form builder</a>
+
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Form Studio home">
+        <span class="brand-mark" aria-hidden="true">F</span>
+        <span class="brand-name">form<span>studio</span></span>
+      </a>
+      <div class="breadcrumb" aria-label="Breadcrumb">
+        <span>Workspace</span><span aria-hidden="true">/</span><strong>Form builder</strong>
+      </div>
+      <div class="toolbar">
+        <span class="save-state" id="save" role="status" aria-live="polite"><span class="save-dot" aria-hidden="true"></span><span id="saveText">Autosave on</span></span>
+        <span class="toolbar-divider" aria-hidden="true"></span>
+        <button id="undo" class="icon-button" type="button" aria-label="Undo" title="Undo (Ctrl/⌘ Z)" disabled>↶</button>
+        <button id="redo" class="icon-button" type="button" aria-label="Redo" title="Redo (Ctrl/⌘ Shift Z)" disabled>↷</button>
+        <span class="toolbar-divider history-divider" aria-hidden="true"></span>
+        <button id="importBtn" class="button button-secondary" type="button">Import JSON</button>
+        <button id="exportBtn" class="button button-primary" type="button">Export JSON <span aria-hidden="true">↗</span></button>
+        <input id="importFile" type="file" accept=".json,application/json" hidden />
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="page-heading" aria-labelledby="pageTitle">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> FORM DESIGN <span class="eyebrow-slash">/</span> WORKSPACE</p>
+          <h1 id="pageTitle">Build your form</h1>
+          <p class="page-subtitle">Add questions on the left and adjust them on the right. Your student preview updates as you edit.</p>
+        </div>
+        <div class="heading-actions">
+          <span class="version-badge"><span class="version-dot" aria-hidden="true"></span> Form version <span id="schemaVersion">1</span></span>
+          <button id="reset" class="button button-text" type="button">Reset sample</button>
+        </div>
+      </section>
+
+      <div class="workspace" id="builder">
+        <aside class="panel content-panel" aria-labelledby="contentTitle">
+          <div class="panel-heading">
+            <span class="step-marker">01</span>
+            <div><p class="panel-eyebrow">CONTENT</p><h2 id="contentTitle">Your form</h2></div>
+            <span id="count" class="count-badge">0 questions</span>
+          </div>
+
+          <div class="form-details">
+            <label class="control-label" for="title">Form name</label>
+            <input id="title" class="text-control form-title-control" data-setting="title" maxlength="80" placeholder="e.g. Workshop registration" />
+            <label class="control-label" for="description">Welcome message <span>(optional)</span></label>
+            <textarea id="description" class="text-control description-control" data-setting="description" rows="2" maxlength="240" placeholder="A short message students see under the form name."></textarea>
+          </div>
+
+          <div class="section-heading">
+            <div><p class="panel-eyebrow">ADD QUESTIONS</p><h3>Add a question</h3></div>
+            <span class="helper-label">Choose a type</span>
+          </div>
+          <div class="add-grid" aria-label="Question types">
+            <button class="add-button" data-add="text" type="button"><span class="add-glyph">T</span><span><strong>Short answer</strong><small>A written response</small></span></button>
+            <button class="add-button" data-add="number" type="button"><span class="add-glyph">#</span><span><strong>Number</strong><small>Digits only</small></span></button>
+            <button class="add-button" data-add="select" type="button"><span class="add-glyph">≡</span><span><strong>Dropdown</strong><small>Pick one option</small></span></button>
+            <button class="add-button" data-add="checkbox" type="button"><span class="add-glyph">✓</span><span><strong>Checkbox</strong><small>Tick a box</small></span></button>
+            <button class="add-button" data-add="date" type="button"><span class="add-glyph">▦</span><span><strong>Date</strong><small>Choose a date</small></span></button>
+            <button class="add-button" data-add="file" type="button"><span class="add-glyph">↑</span><span><strong>File upload</strong><small>Attach a file</small></span></button>
+          </div>
+
+          <div class="section-heading question-list-heading">
+            <div><p class="panel-eyebrow">YOUR FORM</p><h3>Question order</h3></div>
+            <span class="helper-label">Use arrows to move</span>
+          </div>
+          <div id="fields" class="question-list" role="list" aria-label="Questions in your form"></div>
+          <div id="empty" class="empty-state" hidden>
+            <span class="empty-icon" aria-hidden="true">＋</span>
+            <strong>Your form starts here</strong>
+            <span>Choose a question type above to add your first question.</span>
+          </div>
+          <p class="autosave-note"><span aria-hidden="true">✳</span> Your draft saves automatically in this browser.</p>
+        </aside>
+
+        <section class="panel preview-panel" aria-labelledby="previewTitleHeading">
+          <div class="panel-heading preview-heading">
+            <span class="step-marker preview-marker">02</span>
+            <div><p class="panel-eyebrow">STUDENT VIEW</p><h2 id="previewTitleHeading">Live preview</h2></div>
+            <div class="device-toggle" role="group" aria-label="Preview size">
+              <button class="device-button is-active" data-device="desktop" type="button" aria-pressed="true" aria-label="Desktop preview" title="Desktop preview">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3" width="15" height="11" rx="1.5"/><path d="M7 17h6m-3-3v3"/></svg>
+              </button>
+              <button class="device-button" data-device="mobile" type="button" aria-pressed="false" aria-label="Mobile preview" title="Mobile preview">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5.5" y="2" width="9" height="16" rx="2"/><path d="M8.5 4h3m-2.5 11.5h2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="stage" class="preview-stage">
+            <div class="browser-frame">
+              <div class="browser-chrome" aria-hidden="true">
+                <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+                <span class="browser-address">student-form.preview</span>
+                <span class="browser-menu">•••</span>
+              </div>
+              <form id="studentForm" class="student-form" novalidate>
+                <div class="form-head">
+                  <div class="student-form-brand"><span class="student-form-mark" aria-hidden="true">F</span><span>STUDENT FORM</span></div>
+                  <h3 id="studentTitle"></h3>
+                  <p id="studentDescription"></p>
+                </div>
+                <div id="answers" class="answers"></div>
+                <button class="submit-button" type="submit">Send response <span aria-hidden="true">→</span></button>
+                <p class="preview-disclaimer">This is a preview. Responses are not sent or saved.</p>
+                <p id="submitMessage" class="submit-message" aria-live="polite"></p>
+              </form>
+            </div>
+          </div>
+          <div class="panel-footer preview-footer">
+            <span class="preview-note"><span class="info-icon" aria-hidden="true">i</span> Try filling it in to see required questions and answer rules.</span>
+            <button id="clear" class="clear-button" type="button">Clear answers</button>
+          </div>
+        </section>
+
+        <aside class="panel settings-panel" aria-labelledby="settingsTitle">
+          <div class="panel-heading">
+            <span class="step-marker settings-marker">03</span>
+            <div><p class="panel-eyebrow">SETTINGS</p><h2 id="settingsTitle">Question settings</h2></div>
+          </div>
+          <div id="questionEditor" class="question-editor" aria-live="polite"></div>
+        </aside>
+      </div>
+
+      <footer class="app-footer">
+        <span>Make forms clear and easy to answer.</span>
+        <span><span class="footer-mark" aria-hidden="true">F</span> FORM STUDIO <span class="footer-separator">·</span> HTML, CSS &amp; JavaScript</span>
+      </footer>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="app.js" defer></script>
+  </body>
+</html>
