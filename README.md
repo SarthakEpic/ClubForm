@@ -2,7 +2,11 @@
 
 Form Studio is a small, no-code form builder made with plain HTML, CSS, and JavaScript. It runs in a modern browser without a package install or build step.
 
-## Open the app
+## Live app
+
+[Open Form Studio](https://form-studio.onrender.com)
+
+## Open locally
 
 Open `index.html` in a browser. Your form draft saves automatically in that browser. The **Reset sample** button restores the example form.
 
